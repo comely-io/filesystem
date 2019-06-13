@@ -87,7 +87,7 @@ abstract class AbstractPath
     public function path(): string
     {
         if ($this->deleted) {
-            throw new PathException('File/directory path has been deleted is no longer valid');
+            throw new PathException('File/directory path has been deleted and is no longer valid');
         }
 
         return $this->path;
