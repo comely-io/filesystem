@@ -91,7 +91,7 @@ class Directory extends AbstractPath
             return new File($this->suffix($child));
         }
 
-        return $this->factory->file($child, ""); // Create new blank file
+        return $this->create()->file($child, ""); // Create new blank file
     }
 
     /**
@@ -106,7 +106,7 @@ class Directory extends AbstractPath
             return new Directory($this->suffix($child));
         }
 
-        return $this->factory->dirs($child);
+        return $this->create()->dirs($child);
     }
 
     /**

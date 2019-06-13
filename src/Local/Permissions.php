@@ -41,6 +41,21 @@ class Permissions
     }
 
     /**
+     * @return array
+     */
+    public function __debugInfo(): array
+    {
+        $permissions = [];
+        foreach (["read", "write", "execute"] as $perm) {
+            if (is_bool($this->$perm)) {
+                $permissions[$perm] = $this->$perm;
+            }
+        }
+
+        return $permissions;
+    }
+
+    /**
      * @return Permissions
      */
     public function reset(): self

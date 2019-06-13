@@ -63,6 +63,19 @@ abstract class AbstractPath
     }
 
     /**
+     * @return array
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            "path" => $this->path,
+            "type" => $this->type,
+            "size" => $this->size,
+            "permissions" => $this->permissions
+        ];
+    }
+
+    /**
      * @return int|null
      */
     public function type(): ?int
