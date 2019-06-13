@@ -94,6 +94,14 @@ abstract class AbstractPath
     }
 
     /**
+     * @return string
+     */
+    public function basename(): string
+    {
+        return basename($this->path);
+    }
+
+    /**
      * @return Permissions
      */
     public function permissions(): Permissions
