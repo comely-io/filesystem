@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Comely\Filesystem\Local;
 
+use Comely\Filesystem\Exception\PathOpException;
+
 /**
  * Class Permissions
  * @package Comely\Filesystem\Local
@@ -46,6 +48,26 @@ class Permissions
         $this->read = null;
         $this->write = null;
         $this->execute = null;
+        return $this;
+    }
+
+    /**
+     * @param string $mode
+     * @return Permissions
+     * @throws PathOpException
+     */
+    public function chmod(string $mode): self
+    {
+        if (!preg_match('/^0[0-9]{3}$/', $mode)) {
+            throw new \InvalidArgumentException('Invalid chmod argument, expecting octal number as string');
+        }
+
+        $chmod = chmod($this->path->path(), intval($mode, 8));
+        if (!$chmod) {
+            throw new PathOpException('Cannot change file/directory permissions');
+        }
+
+        $this->path->clearStatCache();
         return $this;
     }
 
