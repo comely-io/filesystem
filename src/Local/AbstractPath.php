@@ -36,7 +36,7 @@ abstract class AbstractPath
     /** @var null|int */
     private $size;
     /** @var null|bool */
-    private $deleted;
+    protected $deleted;
 
     /**
      * AbstractPath constructor.

@@ -117,6 +117,24 @@ class File extends AbstractPath
     }
 
     /**
+     * @throws PathException
+     * @throws PathOpException
+     * @throws PathPermissionException
+     */
+    public function delete(): void
+    {
+        if (!$this->permissions()->write()) {
+            throw new PathPermissionException('Cannot delete file; Permission error');
+        }
+
+        if (!unlink($this->path())) {
+            throw new PathOpException('Failed to delete file');
+        }
+
+        $this->deleted = true;
+    }
+
+    /**
      * @return int
      * @throws PathException
      * @throws PathOpException

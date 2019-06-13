@@ -83,20 +83,30 @@ class Directory extends AbstractPath
      * @param string $child
      * @return File
      * @throws PathException
+     * @throws PathOpException
      */
     public function file(string $child): File
     {
-        return new File($this->suffix($child));
+        if ($this->has($child)) {
+            return new File($this->suffix($child));
+        }
+
+        return $this->factory->file($child, ""); // Create new blank file
     }
 
     /**
      * @param string $child
      * @return Directory
      * @throws PathException
+     * @throws PathOpException
      */
     public function dir(string $child): Directory
     {
-        return new Directory($this->suffix($child));
+        if ($this->has($child)) {
+            return new Directory($this->suffix($child));
+        }
+
+        return $this->factory->dirs($child);
     }
 
     /**
@@ -188,6 +198,7 @@ class Directory extends AbstractPath
     }
 
     /**
+     * Create new file or sub-directories
      * @return DirFactory
      */
     public function create(): DirFactory
@@ -200,11 +211,91 @@ class Directory extends AbstractPath
     }
 
     /**
+     * Alias of create() method
      * @return DirFactory
      */
     public function new(): DirFactory
     {
         return $this->create();
+    }
+
+    /**
+     * @param string|null $child
+     * @throws PathException
+     * @throws PathOpException
+     * @throws PathPermissionException
+     */
+    public function delete(?string $child = null): void
+    {
+        if (!$this->permissions()->write()) {
+            throw new PathPermissionException('Cannot use delete op; Directory is not writable');
+        }
+
+        // Remove a file or sub-directory
+        if ($child) {
+            $childExists = $this->has($child);
+            if (!$childExists) {
+                throw new PathOpException('Cannot delete; Target file/sub-directory does not exist');
+            }
+
+            if ($childExists === self::IS_DIRECTORY) {
+                (new Directory($child))->delete(); // Remove sub-directory
+                return;
+            }
+
+            if (!unlink($child)) {
+                throw new PathOpException(sprintf('Failed to delete file "%s"', basename($child)));
+            }
+        }
+
+        // Remove directory
+        $this->flush(); // Delete all files and sub-directories
+        if (!rmdir($this->path())) {
+            throw new PathOpException('Failed to delete directory');
+        }
+
+        $this->deleted = true;
+    }
+
+    /**
+     * Deletes all files and sub-directories inside this directory
+     * @param bool $ignoreFails If TRUE then keeps deleting files even if one of the files has failed to delete
+     * @return int Number of files and sub-directories deleted
+     * @throws PathException
+     * @throws PathOpException
+     * @throws PathPermissionException
+     */
+    public function flush(bool $ignoreFails = false): int
+    {
+        if (!$this->permissions()->write()) {
+            throw new PathPermissionException('Cannot flush directory; Directory is not writable');
+        }
+
+        $deleted = 0;
+        foreach ($this->scan(true) as $file) {
+            if (is_dir($file)) {
+                $deleted += (new Directory($file))->flush($ignoreFails);
+                if (!rmdir($file)) {
+                    if (!$ignoreFails) {
+                        throw new PathOpException(sprintf('Could not delete sub-directory "%s"', basename($file)));
+                    }
+                }
+
+                continue;
+            }
+
+            if (!unlink($file)) {
+                if ($ignoreFails) {
+                    continue;
+                }
+
+                throw new PathOpException(sprintf('Could not delete file "%s"', basename($file)));
+            }
+
+            $deleted++;
+        }
+
+        return $deleted;
     }
 
     /**
