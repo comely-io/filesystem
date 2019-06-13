@@ -33,6 +33,8 @@ abstract class AbstractPath
     private $type;
     /** @var null|Permissions */
     private $permissions;
+    /** @var null|FileTimestamps */
+    private $timestamps;
     /** @var null|int */
     private $size;
     /** @var null|bool */
@@ -75,7 +77,8 @@ abstract class AbstractPath
     public function clearStatCache(): self
     {
         clearstatcache(true, $this->path());
-        $this->permissions()->reset(); // Reset cached permissions
+        $this->permissions()->reset(); // Reset stored permissions
+        $this->timestamps()->reset(); // Reset stored timestamps
         $this->size = null; // Clear stored size
         return $this;
     }
@@ -120,6 +123,18 @@ abstract class AbstractPath
     public function parent(): Directory
     {
         return new Directory(dirname($this->path));
+    }
+
+    /**
+     * @return FileTimestamps
+     */
+    public function timestamps(): FileTimestamps
+    {
+        if (!$this->timestamps) {
+            $this->timestamps = new FileTimestamps($this);
+        }
+
+        return $this->timestamps;
     }
 
     /**
