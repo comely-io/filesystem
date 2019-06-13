@@ -47,8 +47,8 @@ abstract class AbstractPath
      */
     public function __construct(string $path)
     {
-        $path = realpath($path); // Get an absolute real path
-        if (!$path) {
+        $this->path = realpath($path); // Get an absolute real path
+        if (!$this->path) {
             throw new PathException('File or directory does not exist');
         }
 
