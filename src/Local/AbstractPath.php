@@ -38,6 +38,16 @@ abstract class AbstractPath
     }
 
     /**
+     * @return AbstractPath
+     */
+    public function clearStatCache(): self
+    {
+        clearstatcache(true, $this->path);
+        $this->permissions()->reset(); // Reset cached permissions
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function path(): string
