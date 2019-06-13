@@ -50,7 +50,7 @@ class Directory extends AbstractPath
     public function suffix(string $path): string
     {
         $sep = preg_quote(DIRECTORY_SEPARATOR, "/");
-        if (!preg_match('/^(' . $sep . '?[\w\-\.]+' . $sep . ')+$/', $path)) {
+        if (!preg_match('/^(' . $sep . '?[\w\-\.]+' . $sep . '?)+$/', $path)) {
             throw new \InvalidArgumentException('Invalid suffix path');
         }
 
