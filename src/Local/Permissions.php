@@ -55,6 +55,7 @@ class Permissions
      * @param string $mode
      * @return Permissions
      * @throws PathOpException
+     * @throws \Comely\Filesystem\Exception\PathException
      */
     public function chmod(string $mode): self
     {
@@ -62,8 +63,7 @@ class Permissions
             throw new \InvalidArgumentException('Invalid chmod argument, expecting octal number as string');
         }
 
-        $chmod = chmod($this->path->path(), intval($mode, 8));
-        if (!$chmod) {
+        if (!chmod($this->path->path(), intval($mode, 8))) {
             throw new PathOpException('Cannot change file/directory permissions');
         }
 
@@ -73,6 +73,7 @@ class Permissions
 
     /**
      * @return bool
+     * @throws \Comely\Filesystem\Exception\PathException
      */
     public function read(): bool
     {
@@ -85,6 +86,7 @@ class Permissions
 
     /**
      * @return bool
+     * @throws \Comely\Filesystem\Exception\PathException
      */
     public function write(): bool
     {
@@ -97,6 +99,7 @@ class Permissions
 
     /**
      * @return bool
+     * @throws \Comely\Filesystem\Exception\PathException
      */
     public function execute(): bool
     {
