@@ -115,4 +115,19 @@ class File extends AbstractPath
 
         return $len;
     }
+
+    /**
+     * @return int
+     * @throws PathException
+     * @throws PathOpException
+     */
+    protected function findSizeInBytes(): int
+    {
+        $size = filesize($this->path());
+        if (!is_int($size)) {
+            throw new PathOpException('Failed to check file size');
+        }
+
+        return $size;
+    }
 }

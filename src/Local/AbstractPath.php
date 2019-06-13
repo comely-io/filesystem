@@ -33,6 +33,8 @@ abstract class AbstractPath
     private $type;
     /** @var null|Permissions */
     private $permissions;
+    /** @var null|int */
+    private $size;
     /** @var null|bool */
     private $deleted;
 
@@ -74,6 +76,7 @@ abstract class AbstractPath
     {
         clearstatcache(true, $this->path());
         $this->permissions()->reset(); // Reset cached permissions
+        $this->size = null; // Clear stored size
         return $this;
     }
 
@@ -111,8 +114,20 @@ abstract class AbstractPath
         return new Directory(dirname($this->path));
     }
 
-    public function delete(bool $recursive = false): void
+    /**
+     * @return int
+     */
+    final public function size(): int
     {
+        if (!is_int($this->size)) {
+            $this->size = $this->findSizeInBytes();
+        }
 
+        return $this->size;
     }
+
+    /**
+     * @return int
+     */
+    abstract protected function findSizeInBytes(): int;
 }
