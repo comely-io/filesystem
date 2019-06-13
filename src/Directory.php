@@ -220,6 +220,28 @@ class Directory extends AbstractPath
     }
 
     /**
+     * @param string $child
+     * @param string $mode
+     * @throws PathException
+     * @throws PathOpException
+     */
+    public function chmod(string $child, string $mode = "0755"): void
+    {
+        if (!$child) {
+            throw new \InvalidArgumentException('Expecting relative path to file/sub-directory');
+        }
+
+        if (!preg_match('/^0[0-9]{3}$/', $mode)) {
+            throw new \InvalidArgumentException('Invalid chmod argument, expecting octal number as string');
+        }
+
+        $child = $this->suffix($child);
+        if (!chmod($child, intval($mode, 8))) {
+            throw new PathOpException('Cannot change file/directory permissions');
+        }
+    }
+
+    /**
      * @param string|null $child
      * @throws PathException
      * @throws PathOpException
