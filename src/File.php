@@ -28,7 +28,8 @@ class File extends AbstractPath
     /**
      * File constructor.
      * @param string $path
-     * @throws Exception\PathException
+     * @throws Exception\PathNotExistException
+     * @throws PathException
      */
     public function __construct(string $path)
     {

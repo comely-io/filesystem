@@ -16,6 +16,7 @@ namespace Comely\Filesystem\Local;
 
 use Comely\Filesystem\Directory;
 use Comely\Filesystem\Exception\PathException;
+use Comely\Filesystem\Exception\PathNotExistException;
 
 /**
  * Class AbstractPath
@@ -39,13 +40,13 @@ abstract class AbstractPath implements PathConstantsInterface
     /**
      * AbstractPath constructor.
      * @param string $path
-     * @throws PathException
+     * @throws PathNotExistException
      */
     public function __construct(string $path)
     {
         $this->path = realpath($path); // Get an absolute real path
         if (!$this->path) {
-            throw new PathException('File or directory does not exist');
+            throw new PathNotExistException('File or directory does not exist');
         }
 
         // Type
