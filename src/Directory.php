@@ -57,10 +57,8 @@ class Directory extends AbstractPath
     }
 
     /**
-     * Checks if file or directory exists within the given path and returns its type otherwise NULL
      * @param string $child
      * @return int|null
-     * @throws PathException
      */
     public function has(string $child): ?int
     {
