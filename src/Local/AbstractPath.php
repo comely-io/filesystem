@@ -21,12 +21,8 @@ use Comely\Filesystem\Exception\PathException;
  * Class AbstractPath
  * @package Comely\Filesystem\Local
  */
-abstract class AbstractPath
+abstract class AbstractPath implements PathConstantsInterface
 {
-    public const IS_DIRECTORY = 0x64;
-    public const IS_FILE = 0xc8;
-    public const IS_LINK = 0x012c;
-
     /** @var string */
     private $path;
     /** @var null|int */

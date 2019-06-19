@@ -14,11 +14,13 @@ declare(strict_types=1);
 
 namespace Comely\Filesystem;
 
+use Comely\Filesystem\Local\PathConstantsInterface;
+
 /**
  * Class Filesystem
  * @package Comely\Filesystem
  */
-class Filesystem
+class Filesystem implements PathConstantsInterface
 {
     /** string Version (Major.Minor.Release-Suffix) */
     public const VERSION = "1.0.10";
