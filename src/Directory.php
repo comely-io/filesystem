@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Comely\Filesystem;
 
 use Comely\Filesystem\Exception\PathException;
+use Comely\Filesystem\Exception\PathNotExistException;
 use Comely\Filesystem\Exception\PathOpException;
 use Comely\Filesystem\Exception\PathPermissionException;
 use Comely\Filesystem\Local\AbstractPath;
@@ -33,6 +34,7 @@ class Directory extends AbstractPath
      * Directory constructor.
      * @param string $path
      * @throws PathException
+     * @throws PathNotExistException
      */
     public function __construct(string $path)
     {
@@ -49,8 +51,11 @@ class Directory extends AbstractPath
     public function suffix(string $path): string
     {
         $sep = preg_quote(DIRECTORY_SEPARATOR, "/");
+        $path = preg_replace('/' . $sep . '{2,}/', DIRECTORY_SEPARATOR, $path);
         if (!preg_match('/^(' . $sep . '?[\w\-\.]+' . $sep . '?)+$/', $path)) {
             throw new \InvalidArgumentException('Invalid suffix path');
+        } elseif (preg_match('/(\.{1,}' . $sep . ')/', $path)) {
+            throw new \InvalidArgumentException('Path contains illegal references');
         }
 
         return $this->path() . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
@@ -78,32 +83,75 @@ class Directory extends AbstractPath
 
     /**
      * @param string $child
+     * @param bool $createIfNotExists
      * @return File
      * @throws PathException
+     * @throws PathNotExistException
      * @throws PathOpException
      */
-    public function file(string $child): File
+    public function file(string $child, bool $createIfNotExists = false): File
     {
-        if ($this->has($child)) {
+        try {
             return new File($this->suffix($child));
-        }
+        } catch (PathNotExistException $e) {
+            if ($createIfNotExists) {
+                return $this->create()->file($child, ""); // Create new blank file
+            }
 
-        return $this->create()->file($child, ""); // Create new blank file
+            throw new PathNotExistException('No such file exists in directory');
+        }
     }
 
     /**
      * @param string $child
+     * @param bool $createIfNotExists
      * @return Directory
      * @throws PathException
      * @throws PathOpException
      */
-    public function dir(string $child): Directory
+    public function dir(string $child, bool $createIfNotExists = false): Directory
     {
-        if ($this->has($child)) {
+        try {
             return new Directory($this->suffix($child));
+        } catch (PathNotExistException $e) {
+            if ($createIfNotExists) {
+                return $this->create()->dirs($child);
+            }
+
+            throw new PathException('No such sub-directory exists');
+        }
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $data
+     * @param bool $append
+     * @param bool $lock
+     * @return int
+     * @throws PathOpException
+     * @throws PathPermissionException
+     */
+    public function write(string $fileName, string $data, bool $append = false, bool $lock = false): int
+    {
+        if (!$this->permissions()->write()) {
+            throw new PathPermissionException('Directory is not writable');
         }
 
-        return $this->create()->dirs($child);
+        $flags = 0;
+        if ($append && $lock) {
+            $flags = FILE_APPEND | LOCK_EX;
+        } elseif ($append) {
+            $flags = FILE_APPEND;
+        } elseif ($lock) {
+            $flags = LOCK_EX;
+        }
+
+        $len = file_put_contents($this->suffix($fileName), $data, $flags, null);
+        if (!is_int($len)) {
+            throw new PathOpException(sprintf('An error occurred while writing file'));
+        }
+
+        return $len;
     }
 
     /**
