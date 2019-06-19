@@ -88,7 +88,6 @@ class Permissions
 
     /**
      * @return bool
-     * @throws \Comely\Filesystem\Exception\PathException
      */
     public function read(): bool
     {
@@ -101,7 +100,6 @@ class Permissions
 
     /**
      * @return bool
-     * @throws \Comely\Filesystem\Exception\PathException
      */
     public function write(): bool
     {
@@ -114,7 +112,6 @@ class Permissions
 
     /**
      * @return bool
-     * @throws \Comely\Filesystem\Exception\PathException
      */
     public function execute(): bool
     {

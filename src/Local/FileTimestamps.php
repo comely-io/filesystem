@@ -104,7 +104,6 @@ class FileTimestamps
 
     /**
      * @return string
-     * @throws \Comely\Filesystem\Exception\PathException
      */
     private function fileOrDirPath(): string
     {

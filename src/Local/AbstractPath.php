@@ -85,7 +85,6 @@ abstract class AbstractPath
 
     /**
      * @return AbstractPath
-     * @throws PathException
      */
     public function clearStatCache(): self
     {
@@ -98,12 +97,11 @@ abstract class AbstractPath
 
     /**
      * @return string
-     * @throws PathException
      */
     public function path(): string
     {
         if ($this->deleted) {
-            throw new PathException('File/directory path has been deleted and is no longer valid');
+            throw new \RuntimeException('File/directory path has been deleted and is no longer valid');
         }
 
         return $this->path;

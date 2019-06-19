@@ -45,7 +45,6 @@ class Directory extends AbstractPath
     /**
      * @param string $path
      * @return string
-     * @throws PathException
      */
     public function suffix(string $path): string
     {
