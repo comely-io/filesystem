@@ -107,6 +107,7 @@ class Directory extends AbstractPath
      * @param bool $createIfNotExists
      * @return Directory
      * @throws PathException
+     * @throws PathNotExistException
      * @throws PathOpException
      */
     public function dir(string $child, bool $createIfNotExists = false): Directory
