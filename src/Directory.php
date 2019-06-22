@@ -118,7 +118,7 @@ class Directory extends AbstractPath
                 return $this->create()->dirs($child);
             }
 
-            throw new PathException('No such sub-directory exists');
+            throw new PathNotExistException('No such sub-directory exists');
         }
     }
 
