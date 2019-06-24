@@ -23,9 +23,9 @@ use Comely\Filesystem\Local\PathConstantsInterface;
 class Filesystem implements PathConstantsInterface
 {
     /** string Version (Major.Minor.Release-Suffix) */
-    public const VERSION = "1.0.11";
+    public const VERSION = "1.0.12";
     /** int Version (Major * 10000 + Minor * 100 + Release) */
-    public const VERSION_ID = 10011;
+    public const VERSION_ID = 10012;
 
     /**
      * @param string|null $realPath
