@@ -79,7 +79,7 @@ class DirFactory
             throw new \InvalidArgumentException('Invalid mode argument, expecting octal number as string');
         }
 
-        if (!mkdir($child, $mode, true)) {
+        if (!mkdir($child, intval($mode, 8), true)) {
             throw new PathOpException('Failed to create child directories');
         }
 
