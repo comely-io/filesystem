@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -20,7 +20,10 @@ namespace Comely\Filesystem\Local;
  */
 interface PathConstantsInterface
 {
+    /** @var int */
     public const IS_DIRECTORY = 0x64;
+    /** @var int */
     public const IS_FILE = 0xc8;
+    /** @var int */
     public const IS_LINK = 0x012c;
 }

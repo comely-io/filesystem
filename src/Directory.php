@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -28,7 +28,7 @@ use Comely\Filesystem\Local\DirFactory;
 class Directory extends AbstractPath
 {
     /** @var null|DirFactory */
-    private $factory;
+    private ?DirFactory $factory = null;
 
     /**
      * Directory constructor.
@@ -50,11 +50,11 @@ class Directory extends AbstractPath
      */
     public function suffix(string $path): string
     {
-        $sep = '(\/|\\\)';
+        $sep = '([/\\])';
         $path = preg_replace('/' . $sep . '{2,}/', DIRECTORY_SEPARATOR, $path);
-        if (!preg_match('/^(' . $sep . '?[\w\-\.]+' . $sep . '?)+$/', $path)) {
+        if (!preg_match('/^(' . $sep . '?[\w\-.]+' . $sep . '?)+$/', $path)) {
             throw new \InvalidArgumentException('Invalid suffix path');
-        } elseif (preg_match('/(\.{1,}' . $sep . ')/', $path)) {
+        } elseif (preg_match('/(\.+' . $sep . ')/', $path)) {
             throw new \InvalidArgumentException('Path contains illegal references');
         }
 
@@ -93,7 +93,7 @@ class Directory extends AbstractPath
     {
         try {
             return new File($this->suffix($child));
-        } catch (PathNotExistException $e) {
+        } catch (PathNotExistException) {
             if ($createIfNotExists) {
                 return $this->create()->file($child, ""); // Create new blank file
             }
@@ -114,7 +114,7 @@ class Directory extends AbstractPath
     {
         try {
             return new Directory($this->suffix($child));
-        } catch (PathNotExistException $e) {
+        } catch (PathNotExistException) {
             if ($createIfNotExists) {
                 return $this->create()->dirs($child);
             }
@@ -134,7 +134,7 @@ class Directory extends AbstractPath
      */
     public function write(string $fileName, string $data, bool $append = false, bool $lock = false): int
     {
-        if (!$this->permissions()->write()) {
+        if (!$this->permissions()->writable()) {
             throw new PathPermissionException('Directory is not writable');
         }
 
@@ -149,7 +149,7 @@ class Directory extends AbstractPath
 
         $len = file_put_contents($this->suffix($fileName), $data, $flags, null);
         if (!is_int($len)) {
-            throw new PathOpException(sprintf('An error occurred while writing file'));
+            throw new PathOpException('An error occurred while writing file');
         }
 
         return $len;
@@ -157,10 +157,11 @@ class Directory extends AbstractPath
 
     /**
      * @param string $child
-     * @return Directory|File
+     * @return File|Directory
      * @throws PathException
+     * @throws PathNotExistException
      */
-    public function child(string $child)
+    public function child(string $child): File|Directory
     {
         $child = $this->suffix($child);
         $type = $this->has($child);
@@ -184,7 +185,7 @@ class Directory extends AbstractPath
      */
     public function scan(bool $absolutePaths = false, int $sort = SCANDIR_SORT_NONE): array
     {
-        if (!$this->permissions()->read()) {
+        if (!$this->permissions()->readable()) {
             throw new PathPermissionException('Cannot scan directory; Directory is not readable');
         }
 
@@ -217,11 +218,11 @@ class Directory extends AbstractPath
      */
     public function glob(string $pattern, bool $absolutePaths = false, int $flags = 0): array
     {
-        if (!$this->permissions()->read()) {
+        if (!$this->permissions()->readable()) {
             throw new PathPermissionException('Cannot use glob; Directory is not readable');
         }
 
-        if (!preg_match('/^[\w\*\-\.]+$/', $pattern)) {
+        if (!preg_match('/^[\w*\-.]+$/', $pattern)) {
             throw new \InvalidArgumentException('Unacceptable glob pattern');
         }
 
@@ -295,7 +296,7 @@ class Directory extends AbstractPath
      */
     public function delete(?string $child = null): void
     {
-        if (!$this->permissions()->write()) {
+        if (!$this->permissions()->writable()) {
             throw new PathPermissionException('Cannot use delete op; Directory is not writable');
         }
 
@@ -335,7 +336,7 @@ class Directory extends AbstractPath
      */
     public function flush(bool $ignoreFails = false): int
     {
-        if (!$this->permissions()->write()) {
+        if (!$this->permissions()->writable()) {
             throw new PathPermissionException('Cannot flush directory; Directory is not writable');
         }
 

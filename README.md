@@ -4,7 +4,7 @@ Manage files/directories on local FS properly with chained absolute paths.
 
 ## Requirements
 
-* PHP >= 7.1
+* PHP **^8.0**
 
 ## Installation
 

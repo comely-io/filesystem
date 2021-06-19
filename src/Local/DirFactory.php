@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -26,16 +26,12 @@ use Comely\Filesystem\Filesystem;
  */
 class DirFactory
 {
-    /** @var Directory */
-    private $dir;
-
     /**
      * DirFactory constructor.
-     * @param Directory $directory
+     * @param Directory $dir
      */
-    public function __construct(Directory $directory)
+    public function __construct(private Directory $dir)
     {
-        $this->dir = $directory;
     }
 
     /**
@@ -47,7 +43,7 @@ class DirFactory
      */
     public function file(string $path, string $data): File
     {
-        if (!$this->dir->permissions()->write()) {
+        if (!$this->dir->permissions()->writable()) {
             throw new PathPermissionException('Cannot create a new file; Directory is not writable');
         }
 
@@ -70,7 +66,7 @@ class DirFactory
      */
     public function dirs(string $path, string $mode = "0777"): Directory
     {
-        if (!$this->dir->permissions()->write()) {
+        if (!$this->dir->permissions()->writable()) {
             throw new PathPermissionException('Cannot create new sub-dir(s); Directory is not writable');
         }
 

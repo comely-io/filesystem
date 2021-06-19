@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *

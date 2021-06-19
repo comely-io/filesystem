@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -22,22 +22,19 @@ use Comely\Filesystem\Exception\PathOpException;
  */
 class Permissions
 {
-    /** @var AbstractPath */
-    private $path;
     /** @var null|bool */
-    private $read;
+    private ?bool $readable = null;
     /** @var null|bool */
-    private $write;
+    private ?bool $writable = null;
     /** @var null|bool */
-    private $execute;
+    private ?bool $executable = null;
 
     /**
      * Permissions constructor.
      * @param AbstractPath $path
      */
-    public function __construct(AbstractPath $path)
+    public function __construct(private AbstractPath $path)
     {
-        $this->path = $path;
     }
 
     /**
@@ -46,7 +43,7 @@ class Permissions
     public function __debugInfo(): array
     {
         $permissions = [];
-        foreach (["read", "write", "execute"] as $perm) {
+        foreach (["readable", "writable", "executable"] as $perm) {
             if (is_bool($this->$perm)) {
                 $permissions[$perm] = $this->$perm;
             }
@@ -60,9 +57,9 @@ class Permissions
      */
     public function reset(): self
     {
-        $this->read = null;
-        $this->write = null;
-        $this->execute = null;
+        $this->readable = null;
+        $this->writable = null;
+        $this->executable = null;
         return $this;
     }
 
@@ -89,36 +86,36 @@ class Permissions
     /**
      * @return bool
      */
-    public function read(): bool
+    public function readable(): bool
     {
-        if (!is_bool($this->read)) {
-            $this->read = is_readable($this->path->path());
+        if (!is_bool($this->readable)) {
+            $this->readable = is_readable($this->path->path());
         }
 
-        return $this->read;
+        return $this->readable;
     }
 
     /**
      * @return bool
      */
-    public function write(): bool
+    public function writable(): bool
     {
-        if (!is_bool($this->write)) {
-            $this->write = is_writable($this->path->path());
+        if (!is_bool($this->writable)) {
+            $this->writable = is_writable($this->path->path());
         }
 
-        return $this->write;
+        return $this->writable;
     }
 
     /**
      * @return bool
      */
-    public function execute(): bool
+    public function executable(): bool
     {
-        if (!is_bool($this->execute)) {
-            $this->execute = is_executable($this->path->path());
+        if (!is_bool($this->executable)) {
+            $this->executable = is_executable($this->path->path());
         }
 
-        return $this->execute;
+        return $this->executable;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -22,22 +22,19 @@ use Comely\Filesystem\Exception\PathOpException;
  */
 class FileTimestamps
 {
-    /** @var AbstractPath */
-    private $path;
     /** @var null|int */
-    private $modified;
+    private ?int $modified = null;
     /** @var null|int */
-    private $access;
+    private ?int $access = null;
     /** @var null|int */
-    private $ctime;
+    private ?int $ctime = null;
 
     /**
      * FileTimestamps constructor.
      * @param AbstractPath $path
      */
-    public function __construct(AbstractPath $path)
+    public function __construct(private AbstractPath $path)
     {
-        $this->path = $path;
     }
 
     /**

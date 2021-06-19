@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -23,9 +23,9 @@ use Comely\Filesystem\Local\PathConstantsInterface;
 class Filesystem implements PathConstantsInterface
 {
     /** string Version (Major.Minor.Release-Suffix) */
-    public const VERSION = "1.0.13";
+    public const VERSION = "2.0.0";
     /** int Version (Major * 10000 + Minor * 100 + Release) */
-    public const VERSION_ID = 10013;
+    public const VERSION_ID = 20000;
 
     /**
      * @param string|null $realPath

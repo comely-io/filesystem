@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -25,17 +25,17 @@ use Comely\Filesystem\Exception\PathNotExistException;
 abstract class AbstractPath implements PathConstantsInterface
 {
     /** @var string */
-    private $path;
+    private string $path;
     /** @var null|int */
-    private $type;
+    private ?int $type;
     /** @var null|Permissions */
-    private $permissions;
+    private ?Permissions $permissions = null;
     /** @var null|FileTimestamps */
-    private $timestamps;
+    private ?FileTimestamps $timestamps = null;
     /** @var null|int */
-    private $size;
+    private ?int $size = null;
     /** @var null|bool */
-    protected $deleted;
+    protected ?bool $deleted = null;
 
     /**
      * AbstractPath constructor.

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is a part of "comely-io/filesystem" package.
  * https://github.com/comely-io/filesystem
  *
@@ -47,7 +47,7 @@ class File extends AbstractPath
      */
     public function read(): string
     {
-        if (!$this->permissions()->read()) {
+        if (!$this->permissions()->readable()) {
             throw new PathPermissionException('File is not readable');
         }
 
@@ -96,7 +96,7 @@ class File extends AbstractPath
      */
     private function write(string $bytes, bool $append, bool $lock): int
     {
-        if (!$this->permissions()->write()) {
+        if (!$this->permissions()->writable()) {
             throw new PathPermissionException('File is not writable');
         }
 
@@ -124,7 +124,7 @@ class File extends AbstractPath
      */
     public function delete(): void
     {
-        if (!$this->permissions()->write()) {
+        if (!$this->permissions()->writable()) {
             throw new PathPermissionException('Cannot delete file; Permission error');
         }
 
