@@ -44,10 +44,12 @@ abstract class AbstractPath implements PathConstantsInterface
      */
     public function __construct(string $path)
     {
-        $this->path = realpath($path); // Get an absolute real path
-        if (!$this->path) {
+        $realpath = realpath($path); // Get an absolute real path
+        if (!$realpath) {
             throw new PathNotExistException('File or directory does not exist');
         }
+
+        $this->path = $realpath;
 
         // Type
         if (is_dir($path)) {
