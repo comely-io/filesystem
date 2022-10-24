@@ -245,7 +245,7 @@ class Directory extends AbstractPath
     }
 
     /**
-     * Create new file or sub-directories
+     * Create new file or subdirectories
      * @return DirFactory
      */
     public function create(): DirFactory
@@ -300,7 +300,7 @@ class Directory extends AbstractPath
             throw new PathPermissionException('Cannot use delete op; Directory is not writable');
         }
 
-        // Remove a file or sub-directory
+        // Remove a file or subdirectory
         if ($child) {
             $childExists = $this->has($child);
             if (!$childExists) {
@@ -308,17 +308,19 @@ class Directory extends AbstractPath
             }
 
             if ($childExists === self::IS_DIRECTORY) {
-                (new Directory($child))->delete(); // Remove sub-directory
+                (new Directory($child))->delete(); // Remove subdirectory
                 return;
             }
 
             if (!unlink($child)) {
                 throw new PathOpException(sprintf('Failed to delete file "%s"', basename($child)));
             }
+
+            return;
         }
 
         // Remove directory
-        $this->flush(); // Delete all files and sub-directories
+        $this->flush(); // Delete all files and subdirectory
         if (!rmdir($this->path())) {
             throw new PathOpException('Failed to delete directory');
         }
@@ -327,9 +329,9 @@ class Directory extends AbstractPath
     }
 
     /**
-     * Deletes all files and sub-directories inside this directory
+     * Deletes all files and subdirectories inside this directory
      * @param bool $ignoreFails If TRUE then keeps deleting files even if one of the files has failed to delete
-     * @return int Number of files and sub-directories deleted
+     * @return int Number of files and subdirectories deleted
      * @throws PathException
      * @throws PathOpException
      * @throws PathPermissionException

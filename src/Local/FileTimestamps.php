@@ -105,7 +105,7 @@ class FileTimestamps
     private function fileOrDirPath(): string
     {
         $path = $this->path->path();
-        if ($this->path->type() === AbstractPath::IS_DIRECTORY) {
+        if ($this->path->type() === PathConstantsInterface::IS_DIRECTORY) {
             $path .= DIRECTORY_SEPARATOR . ".";
         }
 
